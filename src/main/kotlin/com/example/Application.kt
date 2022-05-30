@@ -12,26 +12,18 @@ import java.io.File
 fun main(args: Array<String>) {
     val data = jacksonObjectMapper().readValue(File(args[0]).readText(), Data::class.java)
     val database = Database(data)
+    val logFilePath = args.getOrNull(1)?.let {
+        File(it).apply {
+            createNewFile()
+        }
+    }
+    val logger = Logger(logFilePath)
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
-        configureRouting(database)
+        configureRouting(database, logger)
         install(ContentNegotiation) {
             jackson()
         }
     }.start(wait = true)
 }
-data class Data(
-    val account: Account,
-    var books: List<Book>,
-) {
-    data class Account(
-        var money: Int,
-        val ownedBooks: MutableMap<Int, Int> = mutableMapOf()
-    )
-    data class Book(
-        val author: String,
-        val name: String,
-        val price: Int,
-        var amount: Int,
-    )
-}
+

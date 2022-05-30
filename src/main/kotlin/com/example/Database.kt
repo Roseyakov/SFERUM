@@ -85,45 +85,19 @@ class Database(private val data: Data) {
     class DatabaseException(message: String): Exception(message)
 
 }
-//{
-//    "products": [
-//    {
-//        "id": 0,
-//        "book": {
-//        "name": "Философия Java",
-//        "author": "Брюс Эккель"
-//    },
-//        "price": 100,
-//        "amount": 3
-//    },
-//    {
-//        "id": 1,
-//        "book": {
-//        "name": "Думай медленно... Решай быстро",
-//        "author": "Даниэль Канеман"
-//    },
-//        "price": 70,
-//        "amount": 2
-//    }
-//    ]
-//}
 
-//{
-//    "books": [
-//    {
-//        "book": {
-//        "name": "Думай медленно... Решай быстро",
-//        "author": "Даниэль Канеман"
-//    },
-//        "amount": 1
-//    },
-//    {
-//        "book": {
-//        "name": "Философия Java",
-//        "author": "Брюс Эккель"
-//    },
-//        "amount": 2
-//    }
-//    ],
-//    "balance": 30
-//}
+data class Data(
+    val account: Account,
+    var books: List<Book>,
+) {
+    data class Account(
+        var money: Int,
+        val ownedBooks: MutableMap<Int, Int> = mutableMapOf()
+    )
+    data class Book(
+        val author: String,
+        val name: String,
+        val price: Int,
+        var amount: Int,
+    )
+}
