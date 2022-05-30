@@ -3,7 +3,8 @@ package com.example
 class Database(private val data: Data) {
     fun getAccount(): Account {
         return Account(
-            books = data.account.ownedBooks.map { data.books[it.key] to it.value  }.map { (book, amount) ->
+            books = data.account.ownedBooks.map { (bookId, amount) ->
+                val book = data.books[bookId]
                 Account.BookItem(
                     book = Account.BookItem.Book(
                         name = book.name,
@@ -30,17 +31,21 @@ class Database(private val data: Data) {
         }
     }
     fun getMarket(): Market {
-        return Market(data.books.mapIndexed { id, book ->
-            Market.Product(
-                id = id,
-                book = Market.Product.Book(
-                    name = book.name,
-                    author = book.author
-                ),
-                price = book.price,
-                amount = book.amount
-            )
-        })
+        return Market(data.books
+            .asSequence()
+            .filter { it.amount > 0 }
+            .mapIndexed { id, book ->
+                Market.Product(
+                    id = id,
+                    book = Market.Product.Book(
+                        name = book.name,
+                        author = book.author
+                    ),
+                    price = book.price,
+                    amount = book.amount
+                )
+            }.toList()
+        )
     }
     data class Market(
         val products: List<Product>
