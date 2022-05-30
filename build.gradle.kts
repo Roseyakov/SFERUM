@@ -4,6 +4,7 @@ val logback_version: String by project
 
 plugins {
     application
+    id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("jvm") version "1.6.21"
 }
 
